@@ -1,69 +1,68 @@
-def index(fileName)
-  if File.exist?(fileName)
-    File.foreach(fileName).with_index {|string, index| 
-      puts "#{index}: #{string}"}
-  else puts "File not found"
-  end
-end
-
-def find(id, fileName)
-  if File.exist?(fileName)
-    File.foreach(fileName).with_index do |string, index|
-      if index.eql? id 
-        puts "Your string is #{string}" 
-      end
+class CashMachine
+    def initialize
+      @balance = 100
+      @stateMenu = '0'
+      @bank_account = 'balance.txt'
     end
-  else puts "File not found"
-  end
-end
-
-def where(pattern, fileName)
-  list = []
-  if File.exist?(fileName)
-    File.foreach(fileName) do |string|
-      if string.include?(pattern)
-        list.push(string)
-      end
-    end
-    list.each.with_index { |val,index| 
-      puts "Pattern: #{pattern} was found with index: #{index} for #{val}" }
-  else puts "File not found"
-  end
-end
-
-def update(fileName, new_file, id, str)
-  if File.exist?(fileName)
-    file = File.open(new_file, 'w')
-    File.foreach(fileName).with_index do |string, index|
-    file.puts(id == index ? str : string)
-    end
-    file.close
-  File.write(fileName, File.read(new_file))
-  File.delete(new_file) if File.exist?(new_file)
-  else puts "File not found"
-  end
-end
   
-
-def delete(fileName, id)
-  if File.exist?(fileName)
-    list = []
-    File.foreach(fileName).with_index do |string, index|
-      if index != id
-        list.push(string)
+    def bankAccount()
+      if File.exist?(@bank_account)
+        File.foreach(@bank_account) { |string| @balance = string.to_i }
+      else puts 'File not found'
       end
+      puts "Your balance: #{@balance}"
     end
-    File.write(fileName, list.join())
-  else puts "File not found"
+  
+    def menu
+      puts "Choose action:\n(Q) Exit the programm\n(D) Deposit\n(W) Withdraw\n(B) balance\nYour choice: "
+      @stateMenu = gets.chomp
+    end
+  
+    def init
+      menu
+      while (@stateMenu != 'Q') && (@stateMenu != 'q')
+        case @stateMenu
+        when 'D', 'd'
+          deposit
+          menu
+        when 'W', 'w'
+          withdraw
+          menu
+        when 'B', 'b'
+          balance
+          menu
+        else
+          puts 'Error'
+        end
+      end
+      puts 'Done!'
+    end
+  
+    def deposit
+      puts 'Insert the sum you want to deposit:'
+      depositSum = gets.to_i
+      if depositSum > 0
+        @balance += depositSum
+      else puts 'Incorrect sum!'
+      end
+      puts "Your balance now is: #{@balance}"
+    end
+  
+    def withdraw
+      puts 'Insert the sum you want to withdraw:'
+      withdrawSum = gets.to_i
+      if (withdrawSum > 0) && (withdrawSum <= @balance)
+        @balance -= withdrawSum
+      else puts 'Incorrect sum!'
+      end
+      puts "Your balance now is: #{@balance}"
+    end
+  
+    def balance
+      puts "Your balance now is: #{@balance}"
+    end
   end
-end
-
-FILE_PATH = 'students.txt'
-NEW_PATH = 'new_file.txt'
-index(FILE_PATH)
-find(2, FILE_PATH)
-where("Вл", FILE_PATH)
-update(FILE_PATH,NEW_PATH,4,"Владимир Соломакин 21")
-delete(FILE_PATH, 3)
-puts "List after removing id"
-index(FILE_PATH)
+  
+  bankAccount = CashMachine.new()
+  bankAccount.bankAccount()
+  bankAccount.init
