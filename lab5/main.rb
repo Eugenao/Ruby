@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 class CashMachine
     def initialize
       @balance = 100
@@ -66,3 +67,6 @@ class CashMachine
   bankAccount = CashMachine.new()
   bankAccount.bankAccount()
   bankAccount.init
+=======
+
+>>>>>>> 2d2982cb8d00e3df6fa15d3e61b865b83c994784
